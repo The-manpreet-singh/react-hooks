@@ -1,22 +1,32 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const Todo = props => {
 
-    //   const [todoName, setTodoName] = useState('');
-    //   const [todoList, setTodoList] = useState([]);
-    const [todoState, setTodoState] = useState({ userInput: '', todoList: [] });
+      const [todoName, setTodoName] = useState('');
+      const [todoList, setTodoList] = useState([]);
+      //const [todoState, setTodoState] = useState({ userInput: '', todoList: [] });
 
       const inputChangeHandler = event => {
-          setTodoState({
-              userInput: event.target.value,
-              todoList: todoState.todoList });
-      };
+    //       setTodoState({
+    //           userInput: event.target.value,
+    //           todoList: todoState.todoList })
+      setTodoName(event.target.value);
+};
 
       const todoAddHandler = () => {
-           setTodoState({
-               userInput: todoState.userInput,
-               todoList: todoState.todoList.concat(todoState.userInput)
-           })
+        //    setTodoState({
+        //        userInput: todoState.userInput,
+        //        todoList: todoState.todoList.concat(todoState.userInput)
+        //    })
+        setTodoList(todoList.concat(todoName));
+        axios.post('https://react-hooks-96.firebaseio.com/todos.json', {name: todoName} )
+        .then( res => {
+            console.log(res);
+        })
+        .catch(err =>{
+            console.log(err);
+        })
       };
 
      return (
@@ -25,10 +35,10 @@ const Todo = props => {
                type="text" 
                placeholder="Todo" 
                onChange={inputChangeHandler} 
-               value={todoState.userInput} />
+               value={todoName} />
              <button type="button" onClick={todoAddHandler}>ADD</button>
              <ul>
-                 {todoState.todoList.map( todo => (
+                 {todoList.map( todo => (
                      <li key={todo}>{todo}</li>
                  ) )}
              </ul>
