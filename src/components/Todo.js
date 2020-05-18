@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const Todo = props => {
@@ -6,6 +6,19 @@ const Todo = props => {
       const [todoName, setTodoName] = useState('');
       const [todoList, setTodoList] = useState([]);
       //const [todoState, setTodoState] = useState({ userInput: '', todoList: [] });
+
+    useEffect( ()=> {
+        axios.get('https://react-hooks-96.firebaseio.com/todos.json')
+        .then( results=> {
+            console.log(results);
+            const todoData= results.data;
+            const todos =[];
+            for(const key in todoData) {
+                todos.push({id: key, name: todoData[key].name })
+            }
+            setTodoList(todos);
+        })
+    })
 
       const inputChangeHandler = event => {
     //       setTodoState({
@@ -39,7 +52,7 @@ const Todo = props => {
              <button type="button" onClick={todoAddHandler}>ADD</button>
              <ul>
                  {todoList.map( todo => (
-                     <li key={todo}>{todo}</li>
+                     <li key={todo.id}>{todo.name}</li>
                  ) )}
              </ul>
          </React.Fragment>
