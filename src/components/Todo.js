@@ -17,7 +17,22 @@ const Todo = props => {
                 todos.push({id: key, name: todoData[key].name })
             }
             setTodoList(todos);
-        })
+            //console.log(todos);
+        });
+        return () => {
+            console.log('Cleanup');
+        };
+    }, [] );
+
+    const mouseMoveHandler = event => {
+        console.log(event.clientX, event.clientY);
+    }
+
+    useEffect( () => {
+        document.addEventListener('mousemove', mouseMoveHandler);
+        return () => {
+            document.removeEventListener('mousemove', mouseMoveHandler);
+        }
     }, [] );
 
       const inputChangeHandler = event => {
