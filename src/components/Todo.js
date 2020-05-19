@@ -5,7 +5,7 @@ const Todo = props => {
 
       const [todoName, setTodoName] = useState('');
      // const [todoList, setTodoList] = useState([]);
-      const [submittedTodo, setSubmittedTodo] = useState(null);
+      //const [submittedTodo, setSubmittedTodo] = useState(null);
       //const [todoState, setTodoState] = useState({ userInput: '', todoList: [] });
 
       const todoListReducer = (state, action) => {
@@ -52,12 +52,12 @@ const Todo = props => {
         }
     }, [] );
 
-    useEffect( () => {
-        if(submittedTodo) {
-        //setTodoList(todoList.concat(submittedTodo));
-        dispatch({ type: 'ADD', payload:submittedTodo })
-        };
-    }, [submittedTodo] ) ;
+    // useEffect( () => {
+    //     if(submittedTodo) {
+    //     //setTodoList(todoList.concat(submittedTodo));
+    //     dispatch({ type: 'ADD', payload:submittedTodo })
+    //     };
+    // }, [submittedTodo] ) ;
 
       const inputChangeHandler = event => {
     //       setTodoState({
@@ -76,13 +76,22 @@ const Todo = props => {
         .then( res => {
             setTimeout( () => {
                 const todoItem = { id: res.data.name, name: todoName };
-                setSubmittedTodo(todoItem);
+                //setSubmittedTodo(todoItem);
+                dispatch({type: 'ADD', payload: todoItem});
                 //console.log(todoItem);
             }, 3000 );
         })
         .catch(err =>{
             console.log(err);
         })
+      };
+
+    const todoRemoveHandler = (todoId) => {
+        axios.delete(`https://react-hooks-96.firebaseio.com/todos/${todoId}.json`)
+         .then( res => {
+            dispatch({ type: 'REMOVE', payload: todoId })
+         })
+         .catch( err => console.log(err) );  
       };
 
      return (
@@ -95,7 +104,7 @@ const Todo = props => {
              <button type="button" onClick={todoAddHandler}>ADD</button>
              <ul>
                  {todoList.map( todo => (
-                     <li key={todo.id}>{todo.name}</li>
+                     <li key={todo.id} onClick={todoRemoveHandler.bind(this,todo.id)} >{todo.name}</li>
                  ) )}
              </ul>
          </React.Fragment>
