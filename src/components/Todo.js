@@ -1,8 +1,11 @@
-import React, { useEffect, useReducer, useRef } from 'react';
+import React, { useState, useEffect, useReducer, useRef } from 'react';
 import axios from 'axios';
 
-const Todo = props => {
+import List from './List';
 
+const Todo = props => {
+      
+     const [inputIsValid, setInputIsValid] = useState(false)
       //const [todoName, setTodoName] = useState('');
      // const [todoList, setTodoList] = useState([]);
       //const [submittedTodo, setSubmittedTodo] = useState(null);
@@ -42,6 +45,14 @@ const Todo = props => {
         };
     }, [] );
 
+    const inputValidationHandler = event => {
+        if(event.target.value.trim() === '' ){
+            setInputIsValid(false);
+        } else {
+            setInputIsValid(true);
+        }
+    }
+
     // const mouseMoveHandler = event => {
     //     console.log(event.clientX, event.clientY);
     // }
@@ -72,7 +83,7 @@ const Todo = props => {
         //        userInput: todoState.userInput,
         //        todoList: todoState.todoList.concat(todoState.userInput)
         //    })
-        
+
         const todoName= todoInputRef.current.value;
        
         axios.post('https://react-hooks-96.firebaseio.com/todos.json', {name: todoName} )
@@ -103,13 +114,11 @@ const Todo = props => {
                type="text" 
                placeholder="Todo" 
                ref={todoInputRef} 
+               onChange={inputValidationHandler}
+               style={{ backgroundColor: inputIsValid ? 'transparent' : 'red' }}
               />
              <button type="button" onClick={todoAddHandler}>ADD</button>
-             <ul>
-                 {todoList.map( todo => (
-                     <li key={todo.id} onClick={todoRemoveHandler.bind(this,todo.id)} >{todo.name}</li>
-                 ) )}
-             </ul>
+            <List items={todoList} onClick={todoRemoveHandler} />
          </React.Fragment>
      ) 
 };
